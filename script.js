@@ -1,4 +1,4 @@
-var HEADERS = ['Name', 'Rarity', 'Life', 'Vocal', 'Dance', 'Visual'];
+var HEADERS = ['Name', 'Type', 'Rarity', 'Life', 'Vocal', 'Dance', 'Visual'];
 
 function sort(data, compare) {
   for (var i = 1; i < data.length; i++) {
@@ -17,11 +17,11 @@ function sort(data, compare) {
 
 var App = React.createClass({
   getInitialState: function() {
-    return {data: [], order: ['sort', 'sort', 'sort', 'sort', 'sort', 'sort'], checked: ['N', 'R', 'SR', 'SSR']};
+    return {data: [], order: ['sort', 'sort', 'sort', 'sort', 'sort', 'sort', 'sort'], type: ['Cute', 'Cool', 'Passion'], rarity: ['N', 'R', 'SR', 'SSR']};
   },
   loadCSV: function() {
     $.ajax({
-      url: 'cute.csv',
+      url: 'data.tsv',
       cache : false,
       success: function(data) {
         this.state.data = data.split('\n').map(function(row) {
@@ -29,6 +29,7 @@ var App = React.createClass({
             return /\d+/.test(col) ? parseInt(col) : col;
           });
         });
+        console.log(this.state.data);
         this.setState(this.state);
       }.bind(this)
     });
@@ -63,7 +64,12 @@ var App = React.createClass({
     return <th key={i}>{col}{this.sortButton(i)}</th>;
   },
   handleChange: function(e) {
-    this.state.checked = [].concat(
+    this.state.type = [].concat(
+      this.refs.Cute.checked ? ['Cute'] : [],
+      this.refs.Cool.checked ? ['Cool'] : [],
+      this.refs.Passion.checked ? ['Passion'] : []
+    );
+    this.state.rarity = [].concat(
       this.refs.N.checked ? ['N'] : [],
       this.refs.R.checked ? ['R'] : [],
       this.refs.SR.checked ? ['SR'] : [],
@@ -74,11 +80,11 @@ var App = React.createClass({
   tableRow: function(row, i) {
     return <tr key={i}>{row.map(function(col, j) { return <td key={j}>{col}</td>; })}</tr>;
   },
-  checked: function(row, i) {
-    return this.state.checked.includes(row[1]);
+  checked: function(row) {
+    return this.state.type.includes(row[1]) && this.state.rarity.includes(row[2]);
   },
   members: function() {
-    return this.state.data.filter(this.checked).sort(function (x, y) { return (y[3] + y[4] + y[5]) - (x[3] + x[4] + x[5]) }).slice(0, 5);
+    return this.state.data.filter(this.checked).sort(function (x, y) { return (y[4] + y[5] + y[6]) - (x[4] + x[5] + x[6]) }).slice(0, 5);
   },
   sum: function(i) {
     return this.members().reduce(function(prev, current) { return current[i] + prev }, 0);
@@ -92,10 +98,13 @@ var App = React.createClass({
           </thead>
           <tbody>
             {this.members().map(this.tableRow)}
-            <tr><td></td><td></td><td>{this.sum(2)}</td><td>{this.sum(3)}</td><td>{this.sum(4)}</td><td>{this.sum(5)}</td></tr>
+            <tr><td></td><td></td><td></td><td>{this.sum(3)}</td><td>{this.sum(4)}</td><td>{this.sum(5)}</td><td>{this.sum(6)}</td></tr>
           </tbody>
         </table>
         <form onChange={this.handleChange}>
+          <label className="checkbox-inline"><input type="checkbox" ref="Cute" defaultChecked={true} />Cute</label>
+          <label className="checkbox-inline"><input type="checkbox" ref="Cool" defaultChecked={true} />Cool</label>
+          <label className="checkbox-inline"><input type="checkbox" ref="Passion" defaultChecked={true} />Passion</label>
           <label className="checkbox-inline"><input type="checkbox" ref="N" defaultChecked={true} />N</label>
           <label className="checkbox-inline"><input type="checkbox" ref="R" defaultChecked={true} />R</label>
           <label className="checkbox-inline"><input type="checkbox" ref="SR" defaultChecked={true} />SR</label>
