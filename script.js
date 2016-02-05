@@ -73,15 +73,15 @@ var App = React.createClass({
       url: 'data.tsv',
       cache : false,
       success: function(data) {
-        var work = data.split('\n').map(function(row) {
-          return row.split('\t').map(function(col) {
-            return /\d+/.test(col) ? parseInt(col) : col;
-          });
-        });
-        this.state.headers = work[0];
-        this.state.headers.push('Total');
-        this.state.data = work.slice(1).map(function(row) {
-          row.push(row[4] + row[5] + row[6]);
+        var data = data.split('\n').map(row => row.split('\t'))
+        this.state.headers = data[0];
+        this.state.headers.splice(7, 0, 'Total');
+        this.state.data = data.slice(1).map(row => {
+          row[3] = parseInt(row[3]);
+          row[4] = parseInt(row[4]);
+          row[5] = parseInt(row[5]);
+          row[6] = parseInt(row[6]);
+          row.splice(7, 0, row[4] + row[5] + row[6]);
           return row;
         });
         this.setState(this.state);
@@ -94,15 +94,64 @@ var App = React.createClass({
   data: function() {
     return this.state.data.filter(row => this.refs.type.predicate(row[1]) && this.refs.rarity.predicate(row[2]));
   },
-  members: function() {
-    return this.data().sort((x, y) => y[7] - x[7]).slice(0, 5);
+  sum: function(data, i) {
+    return data.reduce((prev, current) => current[i] + prev, 0);
+  },
+  unit: function() {
+    var all = this.state.data.map(row => {
+      var row = row.slice(0);
+      row[8] = row[8].split(' ');
+      row[8][2] = parseInt(row[8][2]);
+      return row;
+    });
+    var data = all.filter(row => this.refs.type.predicate(row[1]) && this.refs.rarity.predicate(row[2]));
+    var unit = data.slice(0, 5);
+    data.forEach(center => {
+      var effect = (100 + center[8][2]) / 100;
+      var calculate = function(row) {
+        var row = row.slice(0);
+        if (center[8][0] == 'Cute' && row[1] == 'Cu' || center[8][0] == 'Cool' && row[1] == 'Co' || center[8][0] == 'Passion' && row[1] == 'Pa') {
+          switch (center[8][1]) {
+          case 'Brilliance':
+            row[4] *= effect;
+            row[5] *= effect;
+            row[6] *= effect;
+            break;
+          case 'Voice':
+            row[4] *= effect;
+            break;
+          case 'Step':
+            row[5] *= effect;
+            break;
+          case 'Makeup':
+            row[6] *= effect;
+            break;
+          }
+          row[4] = Math.ceil(row[4]);
+          row[5] = Math.ceil(row[5]);
+          row[6] = Math.ceil(row[6]);
+          row[7] = row[4] + row[5] + row[6];
+        }
+        return row;
+      };
+      var newUnit = data.filter(row => row != center).map(calculate).sort((x, y) => y[7] - x[7]).slice(0, 4);
+      newUnit.unshift(center);
+      newUnit.push(all.map(calculate).sort((x, y) => y[7] - x[7])[0]);
+      if (this.sum(newUnit, 7) > this.sum(unit, 7)) {
+        unit = newUnit;
+      }
+    });
+    return unit.map(row => {
+      row[8] = row[8].join(' ');
+      return row;
+    });
   },
   headerColumn: function(col, i) {
     return <th key={i}>{col}<SortButton app={this} index={i} /></th>;
   },
   sumColumn: function(i) {
-    if (i >= 3) {
-      return <td key={i}>{this.members().reduce(function(prev, current) { return current[i] + prev }, 0)}</td>;
+    if (i >= 3 && i < 8) {
+      return <td key={i}>{this.unit().reduce(function(prev, current) { return current[i] + prev }, 0)}</td>;
     } else {
       return <td key={i}></td>;
     }
@@ -118,7 +167,7 @@ var App = React.createClass({
             <tr>{this.state.headers.map(function(col, i) { return <th key={i}>{col}</th>; })}</tr>
           </thead>
           <tbody>
-            {this.members().map(this.tableRow)}
+            {this.unit().map(this.tableRow)}
             <tr>{this.state.headers.map((col, i) => this.sumColumn(i))}</tr>
           </tbody>
         </table>
