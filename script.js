@@ -122,7 +122,7 @@ var App = React.createClass({
             <tr>{this.state.headers.map((col, i) => this.sumColumn(i))}</tr>
           </tbody>
         </table>
-        <Checkbox ref="type" app={this} data={['Cute', 'Cool', 'Passion']} />
+        <Checkbox ref="type" app={this} data={['Cu', 'Co', 'Pa']} />
         <Checkbox ref="rarity" app={this} data={['N', 'R', 'SR', 'SSR']} />
         <table className="table table-striped">
           <thead>
