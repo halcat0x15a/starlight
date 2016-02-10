@@ -41,7 +41,6 @@ var SortButton = React.createClass({
         <span className={"glyphicon glyphicon-" + this.state.order} aria-hidden="true"></span>
       </button>
     );
-      
   }
 });
 
@@ -59,7 +58,26 @@ var Checkbox = React.createClass({
   },
   render: function() {
     return (
-      <form onChange={this.handleChange}>{this.props.data.map(this.label)}</form>
+      <form onChange={this.handleChange}>
+        <div className="checkbox">{this.props.data.map(this.label)}</div>
+      </form>
+    );
+  }
+});
+
+var Spinbox = React.createClass({
+  value: function() {
+    return this.refs.number.value;
+  },
+  handleChange: function(e) {
+    this.props.app.setState(this.props.app.state);
+  },
+  render: function() {
+    return (
+      <form onChange={this.handleChange}>
+        <label htmlFor={this.props.name}>{this.props.name}</label>
+        <input ref="number" id={this.props.name} className="form-control" type="number" step="10" defaultValue="100" />
+      </form>
     );
   }
 });
@@ -113,18 +131,18 @@ var App = React.createClass({
         if (center[8][0] == 'Cute' && row[1] == 'Cu' || center[8][0] == 'Cool' && row[1] == 'Co' || center[8][0] == 'Passion' && row[1] == 'Pa') {
           switch (center[8][1]) {
           case 'Brilliance':
-            row[4] *= effect;
-            row[5] *= effect;
-            row[6] *= effect;
+            row[4] *= effect * parseInt(this.refs.vocal.value()) / 100;
+            row[5] *= effect * parseInt(this.refs.dance.value()) / 100;
+            row[6] *= effect * parseInt(this.refs.visual.value()) / 100;
             break;
           case 'Voice':
-            row[4] *= effect;
+            row[4] *= effect * parseInt(this.refs.vocal.value()) / 100;
             break;
           case 'Step':
-            row[5] *= effect;
+            row[5] *= effect * parseInt(this.refs.dance.value()) / 100;
             break;
           case 'Makeup':
-            row[6] *= effect;
+            row[6] *= effect * parseInt(this.refs.visual.value()) / 100;
             break;
           }
           row[4] = Math.ceil(row[4]);
@@ -133,7 +151,7 @@ var App = React.createClass({
           row[7] = row[4] + row[5] + row[6];
         }
         return row;
-      };
+      }.bind(this);
       var newUnit = data.filter(row => row != center).map(calculate).sort((x, y) => y[7] - x[7]).slice(0, 4);
       newUnit.unshift(center);
       newUnit.push(all.map(calculate).sort((x, y) => y[7] - x[7])[0]);
@@ -173,6 +191,9 @@ var App = React.createClass({
         </table>
         <Checkbox ref="type" app={this} data={['Cu', 'Co', 'Pa']} />
         <Checkbox ref="rarity" app={this} data={['N', 'R', 'SR', 'SSR']} />
+        <Spinbox ref="vocal" name="Vocal" app={this} />
+        <Spinbox ref="dance" name="Dance" app={this} />
+        <Spinbox ref="visual" name="Visual" app={this} />
         <table className="table table-striped">
           <thead>
             <tr>{this.state.headers.map(this.headerColumn)}</tr>
