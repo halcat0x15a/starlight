@@ -1,0 +1,16 @@
+{
+  "name": "starlight",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "watchify script.js -o bundle.js -t [ babelify --presets [ es2015 react ] ] -v"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.6.0",
+    "babel-preset-react": "^6.5.0",
+    "babelify": "^7.2.0"
+  },
+  "dependencies": {
+    "react": "^0.14.7",
+    "react-dom": "^0.14.7"
+  }
+}
