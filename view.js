@@ -1,57 +1,49 @@
-import * as model from "./model";
+import * as model from './model';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-var SortButton = React.createClass({
-  statics: {
-    group: []
-  },
-  componentDidMount: function() {
-    this.constructor.group.push(this);
-  },
-  getInitialState: function() {
-    return {order: 'sort'};
-  },
-  onClick: function(e) {
-    for (let button of this.constructor.group) {
-      if (button != this) {
-        button.setState({order: 'sort'});
-      }
-    }
-    switch (this.state.order) {
-    case 'sort':
-      this.props.onClick(data => data.slice(0).sort((x, y) => this.props.by(y) - this.props.by(x)));
-      this.setState({order: 'sort-by-order-alt'});
-      break;
-    case 'sort-by-order-alt':
-      this.props.onClick(data => data.slice(0).sort((x, y) => this.props.by(x) - this.props.by(y)));
-      this.setState({order: 'sort-by-order'});
-      break;
-    case 'sort-by-order':
-      this.props.onClick(data => data);
-      this.setState({order: 'sort'});
-      break;
-    }
-  },
-  render: function() {
+class SortButton extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {order: 'sort'};
+  }
+  onClick(event) {
+    this.props.onClick(this);
+  }
+  render() {
     return (
       <a href="#" role="button">
-        <span className={"glyphicon glyphicon-" + this.state.order} aria-hidden="true" onClick={this.onClick}></span>
+        <span className={"glyphicon glyphicon-" + this.state.order} aria-hidden="true" onClick={this.onClick.bind(this)}></span>
       </a>
     );
   }
-});
+  sort(array) {
+    switch (this.state.order) {
+    case 'sort':
+      this.setState({order: 'sort-by-order-alt'});
+      return array.slice(0).sort((x, y) => this.props.by(y) - this.props.by(x));
+    case 'sort-by-order-alt':
+      this.setState({order: 'sort-by-order'});
+      return array.slice(0).sort((x, y) => this.props.by(x) - this.props.by(y));
+    case 'sort-by-order':
+      this.setState({order: 'sort'});
+      return array;
+    }
+  }
+  reset() {
+    this.setState({order: 'sort'});
+  }
+}
+
+SortButton.propTypes = {
+  by: React.PropTypes.func.isRequired,
+  onClick: React.PropTypes.func.isRequired
+}
 
 class IdolTable extends React.Component {
   constructor(props) {
     super(props);
     this.state = {data: this.props.data};
-  }
-  onClick(n) {
-    return e => this.props.onClick(n);
-  }
-  onButtonClick(sort) {
-    this.setState({data: sort(this.props.data)});
   }
   checkType(idol) {
     if (Object.keys(this.refs).length == 0)
@@ -75,18 +67,33 @@ class IdolTable extends React.Component {
     else if (idol.isSSRare())
       return this.refs.ssrare.checked;
   }
-  handleChange(e) {
-    this.forceUpdate();
-  }
   data() {
     return this.state.data.filter(idol => this.checkType(idol) && this.checkRarity(idol));
   }
+  sort(target) {
+    for (let button of [this.refs.life, this.refs.vocal, this.refs.dance, this.refs.visual, this.refs.total]) {
+      if (target === button) {
+        this.setState({data: button.sort(this.props.data)});
+      } else {
+        button.reset();
+      }
+    }
+  }
+  handleChange(e) {
+    this.forceUpdate();
+  }
+  onClick(n) {
+    return e => {
+      window.document.location = '#unit';
+      this.props.onClick(n);
+    }
+  }
   render() {
     return (
-      <div className="panel panel-default">
+      <div className="panel panel-default" name="table">
         <div className="panel-heading">アイドル一覧</div>
         <div className="panel-body">
-          <form onChange={this.handleChange}>
+          <form onChange={this.handleChange.bind(this)}>
             <label className="checkbox-inline"><input type="checkbox" ref="cute" defaultChecked={true} /> キュート</label>
             <label className="checkbox-inline"><input type="checkbox" ref="cool" defaultChecked={true} /> クール</label>
             <label className="checkbox-inline"><input type="checkbox" ref="passion" defaultChecked={true} /> パッション</label>
@@ -96,22 +103,34 @@ class IdolTable extends React.Component {
             <label className="checkbox-inline"><input type="checkbox" ref="ssrare" defaultChecked={true} /> SSレア</label>
           </form>
         </div>
-        <table className="table table-striped">
+        <table className="table table-hover table-striped">
           <thead>
             <tr>
               <th>アイドル</th>
               <th>タイプ</th>
               <th>レア度</th>
-              <th>ライフ <SortButton onClick={this.onButtonClick} by={idol => idol.life} /></th>
-              <th>ボーカル <SortButton onClick={this.onButtonClick} by={idol => idol.vocal} /></th>
-              <th>ダンス <SortButton onClick={this.onButtonClick} by={idol => idol.dance} /></th>
-              <th>ビジュアル <SortButton onClick={this.onButtonClick} by={idol => idol.visual} /></th>
-              <th>総アピール値 <SortButton onClick={this.onButtonClick} by={idol => idol.total()} /></th>
+              <th>ライフ <SortButton ref="life" by={idol => idol.life} onClick={this.sort.bind(this)} /></th>
+              <th>ボーカル <SortButton ref="vocal" by={idol => idol.vocal} onClick={this.sort.bind(this)} /></th>
+              <th>ダンス <SortButton ref="dance" by={idol => idol.dance} onClick={this.sort.bind(this)} /></th>
+              <th>ビジュアル <SortButton ref="visual" by={idol => idol.visual} onClick={this.sort.bind(this)} /></th>
+              <th>総アピール値 <SortButton ref="total" by={idol => idol.total()} onClick={this.sort.bind(this)} /></th>
               <th>センター効果</th>
             </tr>
           </thead>
           <tbody>
-            {this.data().map((row, i) => <IdolData key={i} onClick={this.onClick(i)} idol={row} isCenter={false} isGuest={false} />)}
+            {this.data().map((idol, i) =>
+              <tr key={i} onClick={this.onClick(i)}>
+                <td>{idol.name}</td>
+                <td>{idol.type}</td>
+                <td>{idol.rarity}</td>
+                <td>{idol.life}</td>
+                <td>{idol.vocal}</td>
+                <td>{idol.dance}</td>
+                <td>{idol.visual}</td>
+                <td>{idol.total()}</td>
+                <td>{idol.effect}</td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
@@ -119,32 +138,15 @@ class IdolTable extends React.Component {
   }
 }
 
-var IdolData = React.createClass({
-  render: function() {
-    return (
-      <tr onClick={this.props.onClick}>
-        <td>{this.props.idol.name} {this.props.isCenter ? <span className="badge">センター</span> : this.props.isGuest ? <span className="badge">ゲスト</span> : ''}</td>
-        <td>{this.props.idol.type}</td>
-        <td>{this.props.idol.rarity}</td>
-        <td>{this.props.idol.life}</td>
-        <td>{this.props.idol.vocal}</td>
-        <td>{this.props.idol.dance}</td>
-        <td>{this.props.idol.visual}</td>
-        <td>{this.props.idol.total()}</td>
-        <td>{this.props.idol.effect}</td>
-      </tr>
-    );
+class IdolUnit extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {unit: model.IdolUnit.empty(), focus: 0};
   }
-})
-
-var IdolUnit = React.createClass({
-  getInitialState: function() {
-    return {unit: model.IdolUnit.empty(), focus: 0};
-  },
-  onClick: function(n) {
+  onClick(n) {
     return e => this.setState({focus: n});
-  },
-  unit: function() {
+  }
+  unit() {
     let unit = this.state.unit.effect();
     if (Object.keys(this.refs).length == 0) return unit;
     if (this.refs.all.checked)
@@ -155,61 +157,94 @@ var IdolUnit = React.createClass({
       return unit.coolType();
     else if (this.refs.passion.checked)
       return unit.passionType();
-  },
-  handleChange: function(e) {
+  }
+  handleChange(e) {
     this.forceUpdate();
-  },
-  render: function() {
+  }
+  dissolve(event) {
+    this.setState({unit: model.IdolUnit.empty(), focus: 0});
+  }
+  recommend(event) {
+    let data = this.props.data;
+    if (this.refs.all.checked)
+      data = data.map(idol => idol.brilliance(1.3));
+    else if (this.refs.cute.checked)
+      data = data.map(idol => idol.isCute() ? idol.brilliance(1.3) : idol);
+    else if (this.refs.cool.checked)
+      data = data.map(idol => idol.isCool() ? idol.brilliance(1.3) : idol);
+    else if (this.refs.passion.checked)
+      data = data.map(idol => idol.isPassion() ? idol.brilliance(1.3) : idol);
+    let unit = new model.IdolTable(data).unit();
+    this.setState({unit: new model.IdolUnit(...unit.members().map(idol => this.props.data.filter(x => x.name === idol.name)[0]))});
+  }
+  render() {
     return (
       <div className="panel panel-default">
-        <div className="panel-heading">ユニット</div>
+        <div className="panel-heading"><a name="unit" href="#unit">ユニット</a></div>
         <div className="panel-body">
-          <form className="form-inline" onChange={this.handleChange}>
+          <form className="form-inline" onChange={this.handleChange.bind(this)}>
             <label className="radio-inline"><input ref="all" type="radio" name="music" value="all" defaultChecked={true} />全タイプ曲</label>
             <label className="radio-inline"><input ref="cute" type="radio" name="music" value="cute" /> キュート曲</label>
             <label className="radio-inline"><input ref="cool" type="radio" name="music" value="cool" /> クール曲</label>
             <label className="radio-inline"><input ref="passion" type="radio" name="music" value="passion" /> パッション曲</label>
           </form>
+          <table className="table table-hover">
+            <thead>
+              <tr>
+                <th>アイドル</th>
+                <th>タイプ</th>
+                <th>レア度</th>
+                <th>ライフ</th>
+                <th>ボーカル</th>
+                <th>ダンス</th>
+                <th>ビジュアル</th>
+                <th>総アピール値</th>
+                <th>センター効果</th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.state.unit.members().map((idol, i) =>
+                <tr key={i} className={this.state.focus === i ? 'active' : ''} onClick={this.onClick(i)}>
+                  <td>{idol.name} {i === 0 && idol.name != '' ? <span className="badge">センター</span> : i === 5 && idol.name != '' ? <span className="badge">ゲスト</span> : ''}</td>
+                  <td>{idol.type}</td>
+                  <td>{idol.rarity}</td>
+                  <td>{idol.life}</td>
+                  <td>{idol.vocal}</td>
+                  <td>{idol.dance}</td>
+                  <td>{idol.visual}</td>
+                  <td>{idol.total()}</td>
+                  <td>{idol.effect}</td>
+                </tr>
+              )}
+              <tr>
+                <td></td>
+                <td></td>
+                <td>{this.unit().life()}(+{this.unit().life() - this.state.unit.life()})</td>
+                <td>{this.unit().vocal()}(+{this.unit().vocal() - this.state.unit.vocal()})</td>
+                <td>{this.unit().dance()}(+{this.unit().dance() - this.state.unit.dance()})</td>
+                <td>{this.unit().visual()}(+{this.unit().visual() - this.state.unit.visual()})</td>
+                <td>{this.unit().total()}(+{this.unit().total() - this.state.unit.total()})</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          <div className="text-center">
+            <button className="btn btn-default" type="button" onClick={this.dissolve.bind(this)}>解散する</button>
+            {' '}
+            <button className="btn btn-default" type="button" onClick={this.recommend.bind(this)}>おすすめ編成</button>
+          </div>
         </div>
-        <table className="table table-striped">
-          <thead>
-            <tr>
-              <th>アイドル</th>
-              <th>タイプ</th>
-              <th>レア度</th>
-              <th>ライフ</th>
-              <th>ボーカル</th>
-              <th>ダンス</th>
-              <th>ビジュアル</th>
-              <th>総アピール値</th>
-              <th>センター効果</th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.state.unit.members().map((row, i) => <IdolData key={i} onClick={this.onClick(i)} idol={row} isCenter={i == 0} isGuest={i == 5} />)}
-            <tr>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td>{this.unit().life()}(+{this.unit().life() - this.state.unit.life()})</td>
-              <td>{this.unit().vocal()}(+{this.unit().vocal() - this.state.unit.vocal()})</td>
-              <td>{this.unit().dance()}(+{this.unit().dance() - this.state.unit.dance()})</td>
-              <td>{this.unit().visual()}(+{this.unit().visual() - this.state.unit.visual()})</td>
-              <td>{this.unit().total()}(+{this.unit().total() - this.state.unit.total()})</td>
-              <td></td>
-            </tr>
-          </tbody>
-        </table>
       </div>
     );
   }
-});
+}
 
-export var App = React.createClass({
-  getInitialState: function() {
-    return {data: []};
-  },
-  componentDidMount: function() {
+export class App extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {data: []};
+  }
+  componentDidMount() {
     $.ajax({
       url: 'data.tsv',
       cache : false,
@@ -218,17 +253,17 @@ export var App = React.createClass({
         this.setState({data: data});
       }
     });
-  },
-  onClick: function(n) {
+  }
+  onClick(n) {
     let unit = this.refs.unit.state.unit;
     let members = unit.members();
     let index = this.refs.unit.state.focus;
     members[index] = this.refs.table.data()[n];
     this.refs.unit.setState({unit: new model.IdolUnit(...members), focus: index < 5 ? index + 1 : 0});
-  },
-  render: function() {
+  }
+  render() {
     let unit = this.state.data.length > 0 ? <IdolUnit ref="unit" data={this.state.data} /> : '';
-    let table = this.state.data.length > 0 ? <IdolTable ref="table" data={this.state.data} onClick={this.onClick} /> : '';
+    let table = this.state.data.length > 0 ? <IdolTable ref="table" data={this.state.data} onClick={this.onClick.bind(this)} /> : '';
     return (
       <div>
         {unit}
@@ -236,4 +271,4 @@ export var App = React.createClass({
       </div>
     );
   }
-});
+}

@@ -19438,109 +19438,81 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var SortButton = _react2.default.createClass({
-  displayName: 'SortButton',
+var SortButton = function (_React$Component) {
+  _inherits(SortButton, _React$Component);
 
-  statics: {
-    group: []
-  },
-  componentDidMount: function componentDidMount() {
-    this.constructor.group.push(this);
-  },
-  getInitialState: function getInitialState() {
-    return { order: 'sort' };
-  },
-  onClick: function onClick(e) {
-    var _this = this;
+  function SortButton(props) {
+    _classCallCheck(this, SortButton);
 
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(SortButton).call(this, props));
 
-    try {
-      for (var _iterator = this.constructor.group[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-        var button = _step.value;
-
-        if (button != this) {
-          button.setState({ order: 'sort' });
-        }
-      }
-    } catch (err) {
-      _didIteratorError = true;
-      _iteratorError = err;
-    } finally {
-      try {
-        if (!_iteratorNormalCompletion && _iterator.return) {
-          _iterator.return();
-        }
-      } finally {
-        if (_didIteratorError) {
-          throw _iteratorError;
-        }
-      }
-    }
-
-    switch (this.state.order) {
-      case 'sort':
-        this.props.onClick(function (data) {
-          return data.slice(0).sort(function (x, y) {
-            return _this.props.by(y) - _this.props.by(x);
-          });
-        });
-        this.setState({ order: 'sort-by-order-alt' });
-        break;
-      case 'sort-by-order-alt':
-        this.props.onClick(function (data) {
-          return data.slice(0).sort(function (x, y) {
-            return _this.props.by(x) - _this.props.by(y);
-          });
-        });
-        this.setState({ order: 'sort-by-order' });
-        break;
-      case 'sort-by-order':
-        this.props.onClick(function (data) {
-          return data;
-        });
-        this.setState({ order: 'sort' });
-        break;
-    }
-  },
-  render: function render() {
-    return _react2.default.createElement(
-      'a',
-      { href: '#', role: 'button' },
-      _react2.default.createElement('span', { className: "glyphicon glyphicon-" + this.state.order, 'aria-hidden': 'true', onClick: this.onClick })
-    );
+    _this.state = { order: 'sort' };
+    return _this;
   }
-});
 
-var IdolTable = function (_React$Component) {
-  _inherits(IdolTable, _React$Component);
+  _createClass(SortButton, [{
+    key: 'onClick',
+    value: function onClick(event) {
+      this.props.onClick(this);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'a',
+        { href: '#', role: 'button' },
+        _react2.default.createElement('span', { className: "glyphicon glyphicon-" + this.state.order, 'aria-hidden': 'true', onClick: this.onClick.bind(this) })
+      );
+    }
+  }, {
+    key: 'sort',
+    value: function sort(array) {
+      var _this2 = this;
+
+      switch (this.state.order) {
+        case 'sort':
+          this.setState({ order: 'sort-by-order-alt' });
+          return array.slice(0).sort(function (x, y) {
+            return _this2.props.by(y) - _this2.props.by(x);
+          });
+        case 'sort-by-order-alt':
+          this.setState({ order: 'sort-by-order' });
+          return array.slice(0).sort(function (x, y) {
+            return _this2.props.by(x) - _this2.props.by(y);
+          });
+        case 'sort-by-order':
+          this.setState({ order: 'sort' });
+          return array;
+      }
+    }
+  }, {
+    key: 'reset',
+    value: function reset() {
+      this.setState({ order: 'sort' });
+    }
+  }]);
+
+  return SortButton;
+}(_react2.default.Component);
+
+SortButton.propTypes = {
+  by: _react2.default.PropTypes.func.isRequired,
+  onClick: _react2.default.PropTypes.func.isRequired
+};
+
+var IdolTable = function (_React$Component2) {
+  _inherits(IdolTable, _React$Component2);
 
   function IdolTable(props) {
     _classCallCheck(this, IdolTable);
 
-    var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(IdolTable).call(this, props));
+    var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(IdolTable).call(this, props));
 
-    _this2.state = { data: _this2.props.data };
-    return _this2;
+    _this3.state = { data: _this3.props.data };
+    return _this3;
   }
 
   _createClass(IdolTable, [{
-    key: 'onClick',
-    value: function onClick(n) {
-      var _this3 = this;
-
-      return function (e) {
-        return _this3.props.onClick(n);
-      };
-    }
-  }, {
-    key: 'onButtonClick',
-    value: function onButtonClick(sort) {
-      this.setState({ data: sort(this.props.data) });
-    }
-  }, {
     key: 'checkType',
     value: function checkType(idol) {
       if (Object.keys(this.refs).length == 0) return true;else if (idol.isCute()) return this.refs.cute.checked;else if (idol.isCool()) return this.refs.cool.checked;else if (idol.isPassion()) return this.refs.passion.checked;
@@ -19549,11 +19521,6 @@ var IdolTable = function (_React$Component) {
     key: 'checkRarity',
     value: function checkRarity(idol) {
       if (Object.keys(this.refs).length == 0) return true;else if (idol.isNormal()) return this.refs.normal.checked;else if (idol.isRare()) return this.refs.rare.checked;else if (idol.isSRare()) return this.refs.srare.checked;else if (idol.isSSRare()) return this.refs.ssrare.checked;
-    }
-  }, {
-    key: 'handleChange',
-    value: function handleChange(e) {
-      this.forceUpdate();
     }
   }, {
     key: 'data',
@@ -19565,13 +19532,42 @@ var IdolTable = function (_React$Component) {
       });
     }
   }, {
+    key: 'sort',
+    value: function sort(target) {
+      var _arr = [this.refs.life, this.refs.vocal, this.refs.dance, this.refs.visual, this.refs.total];
+
+      for (var _i = 0; _i < _arr.length; _i++) {
+        var button = _arr[_i];
+        if (target === button) {
+          this.setState({ data: button.sort(this.props.data) });
+        } else {
+          button.reset();
+        }
+      }
+    }
+  }, {
+    key: 'handleChange',
+    value: function handleChange(e) {
+      this.forceUpdate();
+    }
+  }, {
+    key: 'onClick',
+    value: function onClick(n) {
+      var _this5 = this;
+
+      return function (e) {
+        window.document.location = '#unit';
+        _this5.props.onClick(n);
+      };
+    }
+  }, {
     key: 'render',
     value: function render() {
-      var _this5 = this;
+      var _this6 = this;
 
       return _react2.default.createElement(
         'div',
-        { className: 'panel panel-default' },
+        { className: 'panel panel-default', name: 'table' },
         _react2.default.createElement(
           'div',
           { className: 'panel-heading' },
@@ -19582,7 +19578,7 @@ var IdolTable = function (_React$Component) {
           { className: 'panel-body' },
           _react2.default.createElement(
             'form',
-            { onChange: this.handleChange },
+            { onChange: this.handleChange.bind(this) },
             _react2.default.createElement(
               'label',
               { className: 'checkbox-inline' },
@@ -19629,7 +19625,7 @@ var IdolTable = function (_React$Component) {
         ),
         _react2.default.createElement(
           'table',
-          { className: 'table table-striped' },
+          { className: 'table table-hover table-striped' },
           _react2.default.createElement(
             'thead',
             null,
@@ -19655,41 +19651,41 @@ var IdolTable = function (_React$Component) {
                 'th',
                 null,
                 'ライフ ',
-                _react2.default.createElement(SortButton, { onClick: this.onButtonClick, by: function by(idol) {
+                _react2.default.createElement(SortButton, { ref: 'life', by: function by(idol) {
                     return idol.life;
-                  } })
+                  }, onClick: this.sort.bind(this) })
               ),
               _react2.default.createElement(
                 'th',
                 null,
                 'ボーカル ',
-                _react2.default.createElement(SortButton, { onClick: this.onButtonClick, by: function by(idol) {
+                _react2.default.createElement(SortButton, { ref: 'vocal', by: function by(idol) {
                     return idol.vocal;
-                  } })
+                  }, onClick: this.sort.bind(this) })
               ),
               _react2.default.createElement(
                 'th',
                 null,
                 'ダンス ',
-                _react2.default.createElement(SortButton, { onClick: this.onButtonClick, by: function by(idol) {
+                _react2.default.createElement(SortButton, { ref: 'dance', by: function by(idol) {
                     return idol.dance;
-                  } })
+                  }, onClick: this.sort.bind(this) })
               ),
               _react2.default.createElement(
                 'th',
                 null,
                 'ビジュアル ',
-                _react2.default.createElement(SortButton, { onClick: this.onButtonClick, by: function by(idol) {
+                _react2.default.createElement(SortButton, { ref: 'visual', by: function by(idol) {
                     return idol.visual;
-                  } })
+                  }, onClick: this.sort.bind(this) })
               ),
               _react2.default.createElement(
                 'th',
                 null,
                 '総アピール値 ',
-                _react2.default.createElement(SortButton, { onClick: this.onButtonClick, by: function by(idol) {
+                _react2.default.createElement(SortButton, { ref: 'total', by: function by(idol) {
                     return idol.total();
-                  } })
+                  }, onClick: this.sort.bind(this) })
               ),
               _react2.default.createElement(
                 'th',
@@ -19701,8 +19697,56 @@ var IdolTable = function (_React$Component) {
           _react2.default.createElement(
             'tbody',
             null,
-            this.data().map(function (row, i) {
-              return _react2.default.createElement(IdolData, { key: i, onClick: _this5.onClick(i), idol: row, isCenter: false, isGuest: false });
+            this.data().map(function (idol, i) {
+              return _react2.default.createElement(
+                'tr',
+                { key: i, onClick: _this6.onClick(i) },
+                _react2.default.createElement(
+                  'td',
+                  null,
+                  idol.name
+                ),
+                _react2.default.createElement(
+                  'td',
+                  null,
+                  idol.type
+                ),
+                _react2.default.createElement(
+                  'td',
+                  null,
+                  idol.rarity
+                ),
+                _react2.default.createElement(
+                  'td',
+                  null,
+                  idol.life
+                ),
+                _react2.default.createElement(
+                  'td',
+                  null,
+                  idol.vocal
+                ),
+                _react2.default.createElement(
+                  'td',
+                  null,
+                  idol.dance
+                ),
+                _react2.default.createElement(
+                  'td',
+                  null,
+                  idol.visual
+                ),
+                _react2.default.createElement(
+                  'td',
+                  null,
+                  idol.total()
+                ),
+                _react2.default.createElement(
+                  'td',
+                  null,
+                  idol.effect
+                )
+              );
             })
           )
         )
@@ -19713,293 +19757,362 @@ var IdolTable = function (_React$Component) {
   return IdolTable;
 }(_react2.default.Component);
 
-var IdolData = _react2.default.createClass({
-  displayName: 'IdolData',
+var IdolUnit = function (_React$Component3) {
+  _inherits(IdolUnit, _React$Component3);
 
-  render: function render() {
-    return _react2.default.createElement(
-      'tr',
-      { onClick: this.props.onClick },
-      _react2.default.createElement(
-        'td',
-        null,
-        this.props.idol.name,
-        ' ',
-        this.props.isCenter ? _react2.default.createElement(
-          'span',
-          { className: 'badge' },
-          'センター'
-        ) : this.props.isGuest ? _react2.default.createElement(
-          'span',
-          { className: 'badge' },
-          'ゲスト'
-        ) : ''
-      ),
-      _react2.default.createElement(
-        'td',
-        null,
-        this.props.idol.type
-      ),
-      _react2.default.createElement(
-        'td',
-        null,
-        this.props.idol.rarity
-      ),
-      _react2.default.createElement(
-        'td',
-        null,
-        this.props.idol.life
-      ),
-      _react2.default.createElement(
-        'td',
-        null,
-        this.props.idol.vocal
-      ),
-      _react2.default.createElement(
-        'td',
-        null,
-        this.props.idol.dance
-      ),
-      _react2.default.createElement(
-        'td',
-        null,
-        this.props.idol.visual
-      ),
-      _react2.default.createElement(
-        'td',
-        null,
-        this.props.idol.total()
-      ),
-      _react2.default.createElement(
-        'td',
-        null,
-        this.props.idol.effect
-      )
-    );
+  function IdolUnit(props) {
+    _classCallCheck(this, IdolUnit);
+
+    var _this7 = _possibleConstructorReturn(this, Object.getPrototypeOf(IdolUnit).call(this, props));
+
+    _this7.state = { unit: model.IdolUnit.empty(), focus: 0 };
+    return _this7;
   }
-});
 
-var IdolUnit = _react2.default.createClass({
-  displayName: 'IdolUnit',
+  _createClass(IdolUnit, [{
+    key: 'onClick',
+    value: function onClick(n) {
+      var _this8 = this;
 
-  getInitialState: function getInitialState() {
-    return { unit: model.IdolUnit.empty(), focus: 0 };
-  },
-  onClick: function onClick(n) {
-    var _this6 = this;
+      return function (e) {
+        return _this8.setState({ focus: n });
+      };
+    }
+  }, {
+    key: 'unit',
+    value: function unit() {
+      var unit = this.state.unit.effect();
+      if (Object.keys(this.refs).length == 0) return unit;
+      if (this.refs.all.checked) return unit.allType();else if (this.refs.cute.checked) return unit.cuteType();else if (this.refs.cool.checked) return unit.coolType();else if (this.refs.passion.checked) return unit.passionType();
+    }
+  }, {
+    key: 'handleChange',
+    value: function handleChange(e) {
+      this.forceUpdate();
+    }
+  }, {
+    key: 'dissolve',
+    value: function dissolve(event) {
+      this.setState({ unit: model.IdolUnit.empty(), focus: 0 });
+    }
+  }, {
+    key: 'recommend',
+    value: function recommend(event) {
+      var _this9 = this;
 
-    return function (e) {
-      return _this6.setState({ focus: n });
-    };
-  },
-  unit: function unit() {
-    var unit = this.state.unit.effect();
-    if (Object.keys(this.refs).length == 0) return unit;
-    if (this.refs.all.checked) return unit.allType();else if (this.refs.cute.checked) return unit.cuteType();else if (this.refs.cool.checked) return unit.coolType();else if (this.refs.passion.checked) return unit.passionType();
-  },
-  handleChange: function handleChange(e) {
-    this.forceUpdate();
-  },
-  render: function render() {
-    var _this7 = this;
+      var data = this.props.data;
+      if (this.refs.all.checked) data = data.map(function (idol) {
+        return idol.brilliance(1.3);
+      });else if (this.refs.cute.checked) data = data.map(function (idol) {
+        return idol.isCute() ? idol.brilliance(1.3) : idol;
+      });else if (this.refs.cool.checked) data = data.map(function (idol) {
+        return idol.isCool() ? idol.brilliance(1.3) : idol;
+      });else if (this.refs.passion.checked) data = data.map(function (idol) {
+        return idol.isPassion() ? idol.brilliance(1.3) : idol;
+      });
+      var unit = new model.IdolTable(data).unit();
+      this.setState({ unit: new (Function.prototype.bind.apply(model.IdolUnit, [null].concat(_toConsumableArray(unit.members().map(function (idol) {
+          return _this9.props.data.filter(function (x) {
+            return x.name === idol.name;
+          })[0];
+        })))))() });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this10 = this;
 
-    return _react2.default.createElement(
-      'div',
-      { className: 'panel panel-default' },
-      _react2.default.createElement(
+      return _react2.default.createElement(
         'div',
-        { className: 'panel-heading' },
-        'ユニット'
-      ),
-      _react2.default.createElement(
-        'div',
-        { className: 'panel-body' },
+        { className: 'panel panel-default' },
         _react2.default.createElement(
-          'form',
-          { className: 'form-inline', onChange: this.handleChange },
+          'div',
+          { className: 'panel-heading' },
           _react2.default.createElement(
-            'label',
-            { className: 'radio-inline' },
-            _react2.default.createElement('input', { ref: 'all', type: 'radio', name: 'music', value: 'all', defaultChecked: true }),
-            '全タイプ曲'
-          ),
-          _react2.default.createElement(
-            'label',
-            { className: 'radio-inline' },
-            _react2.default.createElement('input', { ref: 'cute', type: 'radio', name: 'music', value: 'cute' }),
-            ' キュート曲'
-          ),
-          _react2.default.createElement(
-            'label',
-            { className: 'radio-inline' },
-            _react2.default.createElement('input', { ref: 'cool', type: 'radio', name: 'music', value: 'cool' }),
-            ' クール曲'
-          ),
-          _react2.default.createElement(
-            'label',
-            { className: 'radio-inline' },
-            _react2.default.createElement('input', { ref: 'passion', type: 'radio', name: 'music', value: 'passion' }),
-            ' パッション曲'
-          )
-        )
-      ),
-      _react2.default.createElement(
-        'table',
-        { className: 'table table-striped' },
-        _react2.default.createElement(
-          'thead',
-          null,
-          _react2.default.createElement(
-            'tr',
-            null,
-            _react2.default.createElement(
-              'th',
-              null,
-              'アイドル'
-            ),
-            _react2.default.createElement(
-              'th',
-              null,
-              'タイプ'
-            ),
-            _react2.default.createElement(
-              'th',
-              null,
-              'レア度'
-            ),
-            _react2.default.createElement(
-              'th',
-              null,
-              'ライフ'
-            ),
-            _react2.default.createElement(
-              'th',
-              null,
-              'ボーカル'
-            ),
-            _react2.default.createElement(
-              'th',
-              null,
-              'ダンス'
-            ),
-            _react2.default.createElement(
-              'th',
-              null,
-              'ビジュアル'
-            ),
-            _react2.default.createElement(
-              'th',
-              null,
-              '総アピール値'
-            ),
-            _react2.default.createElement(
-              'th',
-              null,
-              'センター効果'
-            )
+            'a',
+            { name: 'unit', href: '#unit' },
+            'ユニット'
           )
         ),
         _react2.default.createElement(
-          'tbody',
-          null,
-          this.state.unit.members().map(function (row, i) {
-            return _react2.default.createElement(IdolData, { key: i, onClick: _this7.onClick(i), idol: row, isCenter: i == 0, isGuest: i == 5 });
-          }),
+          'div',
+          { className: 'panel-body' },
           _react2.default.createElement(
-            'tr',
-            null,
-            _react2.default.createElement('td', null),
-            _react2.default.createElement('td', null),
-            _react2.default.createElement('td', null),
+            'form',
+            { className: 'form-inline', onChange: this.handleChange.bind(this) },
             _react2.default.createElement(
-              'td',
-              null,
-              this.unit().life(),
-              '(+',
-              this.unit().life() - this.state.unit.life(),
-              ')'
+              'label',
+              { className: 'radio-inline' },
+              _react2.default.createElement('input', { ref: 'all', type: 'radio', name: 'music', value: 'all', defaultChecked: true }),
+              '全タイプ曲'
             ),
             _react2.default.createElement(
-              'td',
-              null,
-              this.unit().vocal(),
-              '(+',
-              this.unit().vocal() - this.state.unit.vocal(),
-              ')'
+              'label',
+              { className: 'radio-inline' },
+              _react2.default.createElement('input', { ref: 'cute', type: 'radio', name: 'music', value: 'cute' }),
+              ' キュート曲'
             ),
             _react2.default.createElement(
-              'td',
-              null,
-              this.unit().dance(),
-              '(+',
-              this.unit().dance() - this.state.unit.dance(),
-              ')'
+              'label',
+              { className: 'radio-inline' },
+              _react2.default.createElement('input', { ref: 'cool', type: 'radio', name: 'music', value: 'cool' }),
+              ' クール曲'
             ),
             _react2.default.createElement(
-              'td',
+              'label',
+              { className: 'radio-inline' },
+              _react2.default.createElement('input', { ref: 'passion', type: 'radio', name: 'music', value: 'passion' }),
+              ' パッション曲'
+            )
+          ),
+          _react2.default.createElement(
+            'table',
+            { className: 'table table-hover' },
+            _react2.default.createElement(
+              'thead',
               null,
-              this.unit().visual(),
-              '(+',
-              this.unit().visual() - this.state.unit.visual(),
-              ')'
+              _react2.default.createElement(
+                'tr',
+                null,
+                _react2.default.createElement(
+                  'th',
+                  null,
+                  'アイドル'
+                ),
+                _react2.default.createElement(
+                  'th',
+                  null,
+                  'タイプ'
+                ),
+                _react2.default.createElement(
+                  'th',
+                  null,
+                  'レア度'
+                ),
+                _react2.default.createElement(
+                  'th',
+                  null,
+                  'ライフ'
+                ),
+                _react2.default.createElement(
+                  'th',
+                  null,
+                  'ボーカル'
+                ),
+                _react2.default.createElement(
+                  'th',
+                  null,
+                  'ダンス'
+                ),
+                _react2.default.createElement(
+                  'th',
+                  null,
+                  'ビジュアル'
+                ),
+                _react2.default.createElement(
+                  'th',
+                  null,
+                  '総アピール値'
+                ),
+                _react2.default.createElement(
+                  'th',
+                  null,
+                  'センター効果'
+                )
+              )
             ),
             _react2.default.createElement(
-              'td',
+              'tbody',
               null,
-              this.unit().total(),
-              '(+',
-              this.unit().total() - this.state.unit.total(),
-              ')'
+              this.state.unit.members().map(function (idol, i) {
+                return _react2.default.createElement(
+                  'tr',
+                  { key: i, className: _this10.state.focus === i ? 'active' : '', onClick: _this10.onClick(i) },
+                  _react2.default.createElement(
+                    'td',
+                    null,
+                    idol.name,
+                    ' ',
+                    i === 0 && idol.name != '' ? _react2.default.createElement(
+                      'span',
+                      { className: 'badge' },
+                      'センター'
+                    ) : i === 5 && idol.name != '' ? _react2.default.createElement(
+                      'span',
+                      { className: 'badge' },
+                      'ゲスト'
+                    ) : ''
+                  ),
+                  _react2.default.createElement(
+                    'td',
+                    null,
+                    idol.type
+                  ),
+                  _react2.default.createElement(
+                    'td',
+                    null,
+                    idol.rarity
+                  ),
+                  _react2.default.createElement(
+                    'td',
+                    null,
+                    idol.life
+                  ),
+                  _react2.default.createElement(
+                    'td',
+                    null,
+                    idol.vocal
+                  ),
+                  _react2.default.createElement(
+                    'td',
+                    null,
+                    idol.dance
+                  ),
+                  _react2.default.createElement(
+                    'td',
+                    null,
+                    idol.visual
+                  ),
+                  _react2.default.createElement(
+                    'td',
+                    null,
+                    idol.total()
+                  ),
+                  _react2.default.createElement(
+                    'td',
+                    null,
+                    idol.effect
+                  )
+                );
+              }),
+              _react2.default.createElement(
+                'tr',
+                null,
+                _react2.default.createElement('td', null),
+                _react2.default.createElement('td', null),
+                _react2.default.createElement(
+                  'td',
+                  null,
+                  this.unit().life(),
+                  '(+',
+                  this.unit().life() - this.state.unit.life(),
+                  ')'
+                ),
+                _react2.default.createElement(
+                  'td',
+                  null,
+                  this.unit().vocal(),
+                  '(+',
+                  this.unit().vocal() - this.state.unit.vocal(),
+                  ')'
+                ),
+                _react2.default.createElement(
+                  'td',
+                  null,
+                  this.unit().dance(),
+                  '(+',
+                  this.unit().dance() - this.state.unit.dance(),
+                  ')'
+                ),
+                _react2.default.createElement(
+                  'td',
+                  null,
+                  this.unit().visual(),
+                  '(+',
+                  this.unit().visual() - this.state.unit.visual(),
+                  ')'
+                ),
+                _react2.default.createElement(
+                  'td',
+                  null,
+                  this.unit().total(),
+                  '(+',
+                  this.unit().total() - this.state.unit.total(),
+                  ')'
+                ),
+                _react2.default.createElement('td', null)
+              )
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'text-center' },
+            _react2.default.createElement(
+              'button',
+              { className: 'btn btn-default', type: 'button', onClick: this.dissolve.bind(this) },
+              '解散する'
             ),
-            _react2.default.createElement('td', null)
+            ' ',
+            _react2.default.createElement(
+              'button',
+              { className: 'btn btn-default', type: 'button', onClick: this.recommend.bind(this) },
+              'おすすめ編成'
+            )
           )
         )
-      )
-    );
+      );
+    }
+  }]);
+
+  return IdolUnit;
+}(_react2.default.Component);
+
+var App = exports.App = function (_React$Component4) {
+  _inherits(App, _React$Component4);
+
+  function App(props) {
+    _classCallCheck(this, App);
+
+    var _this11 = _possibleConstructorReturn(this, Object.getPrototypeOf(App).call(this, props));
+
+    _this11.state = { data: [] };
+    return _this11;
   }
-});
 
-var App = exports.App = _react2.default.createClass({
-  displayName: 'App',
+  _createClass(App, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var _this12 = this;
 
-  getInitialState: function getInitialState() {
-    return { data: [] };
-  },
-  componentDidMount: function componentDidMount() {
-    var _this8 = this;
+      $.ajax({
+        url: 'data.tsv',
+        cache: false,
+        success: function success(text) {
+          var data = text.split('\n').slice(1).map(function (row) {
+            return new (Function.prototype.bind.apply(model.Idol, [null].concat(_toConsumableArray(row.split('\t').map(function (col) {
+              return (/^\d+$/.test(col) ? parseInt(col) : col
+              );
+            })))))();
+          });
+          _this12.setState({ data: data });
+        }
+      });
+    }
+  }, {
+    key: 'onClick',
+    value: function onClick(n) {
+      var unit = this.refs.unit.state.unit;
+      var members = unit.members();
+      var index = this.refs.unit.state.focus;
+      members[index] = this.refs.table.data()[n];
+      this.refs.unit.setState({ unit: new (Function.prototype.bind.apply(model.IdolUnit, [null].concat(_toConsumableArray(members))))(), focus: index < 5 ? index + 1 : 0 });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var unit = this.state.data.length > 0 ? _react2.default.createElement(IdolUnit, { ref: 'unit', data: this.state.data }) : '';
+      var table = this.state.data.length > 0 ? _react2.default.createElement(IdolTable, { ref: 'table', data: this.state.data, onClick: this.onClick.bind(this) }) : '';
+      return _react2.default.createElement(
+        'div',
+        null,
+        unit,
+        table
+      );
+    }
+  }]);
 
-    $.ajax({
-      url: 'data.tsv',
-      cache: false,
-      success: function success(text) {
-        var data = text.split('\n').slice(1).map(function (row) {
-          return new (Function.prototype.bind.apply(model.Idol, [null].concat(_toConsumableArray(row.split('\t').map(function (col) {
-            return (/^\d+$/.test(col) ? parseInt(col) : col
-            );
-          })))))();
-        });
-        _this8.setState({ data: data });
-      }
-    });
-  },
-  onClick: function onClick(n) {
-    var unit = this.refs.unit.state.unit;
-    var members = unit.members();
-    var index = this.refs.unit.state.focus;
-    members[index] = this.refs.table.data()[n];
-    this.refs.unit.setState({ unit: new (Function.prototype.bind.apply(model.IdolUnit, [null].concat(_toConsumableArray(members))))(), focus: index < 5 ? index + 1 : 0 });
-  },
-  render: function render() {
-    var unit = this.state.data.length > 0 ? _react2.default.createElement(IdolUnit, { ref: 'unit', data: this.state.data }) : '';
-    var table = this.state.data.length > 0 ? _react2.default.createElement(IdolTable, { ref: 'table', data: this.state.data, onClick: this.onClick }) : '';
-    return _react2.default.createElement(
-      'div',
-      null,
-      unit,
-      table
-    );
-  }
-});
+  return App;
+}(_react2.default.Component);
 
 },{"./model":1,"react":158,"react-dom":29}],161:[function(require,module,exports){
 // shim for using process in browser
