@@ -19625,7 +19625,7 @@ var IdolTable = function (_React$Component2) {
         ),
         _react2.default.createElement(
           'table',
-          { className: 'table table-hover table-striped' },
+          { className: 'table table-hover table-striped table-condensed' },
           _react2.default.createElement(
             'thead',
             null,
@@ -19815,7 +19815,7 @@ var IdolUnit = function (_React$Component3) {
           return _this9.props.data.filter(function (x) {
             return x.name === idol.name;
           })[0];
-        })))))() });
+        })))))(), focus: 0 });
     }
   }, {
     key: 'render',
@@ -19867,7 +19867,7 @@ var IdolUnit = function (_React$Component3) {
           ),
           _react2.default.createElement(
             'table',
-            { className: 'table table-hover' },
+            { className: 'table table-hover table-condensed' },
             _react2.default.createElement(
               'thead',
               null,
@@ -19990,6 +19990,7 @@ var IdolUnit = function (_React$Component3) {
                 null,
                 _react2.default.createElement('td', null),
                 _react2.default.createElement('td', null),
+                _react2.default.createElement('td', null),
                 _react2.default.createElement(
                   'td',
                   null,
@@ -20078,12 +20079,15 @@ var App = exports.App = function (_React$Component4) {
         url: 'data.tsv',
         cache: false,
         success: function success(text) {
-          var data = text.split('\n').slice(1).map(function (row) {
+          var data = text.split('\n').slice(1).filter(function (row) {
+            return row.trim() != '';
+          }).map(function (row) {
             return new (Function.prototype.bind.apply(model.Idol, [null].concat(_toConsumableArray(row.split('\t').map(function (col) {
               return (/^\d+$/.test(col) ? parseInt(col) : col
               );
             })))))();
           });
+          console.log(data);
           _this12.setState({ data: data });
         }
       });

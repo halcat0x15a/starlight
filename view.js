@@ -103,7 +103,7 @@ class IdolTable extends React.Component {
             <label className="checkbox-inline"><input type="checkbox" ref="ssrare" defaultChecked={true} /> SSレア</label>
           </form>
         </div>
-        <table className="table table-hover table-striped">
+        <table className="table table-hover table-striped table-condensed">
           <thead>
             <tr>
               <th>アイドル</th>
@@ -175,7 +175,7 @@ class IdolUnit extends React.Component {
     else if (this.refs.passion.checked)
       data = data.map(idol => idol.isPassion() ? idol.brilliance(1.3) : idol);
     let unit = new model.IdolTable(data).unit();
-    this.setState({unit: new model.IdolUnit(...unit.members().map(idol => this.props.data.filter(x => x.name === idol.name)[0]))});
+    this.setState({unit: new model.IdolUnit(...unit.members().map(idol => this.props.data.filter(x => x.name === idol.name)[0])), focus: 0});
   }
   render() {
     return (
@@ -188,7 +188,7 @@ class IdolUnit extends React.Component {
             <label className="radio-inline"><input ref="cool" type="radio" name="music" value="cool" /> クール曲</label>
             <label className="radio-inline"><input ref="passion" type="radio" name="music" value="passion" /> パッション曲</label>
           </form>
-          <table className="table table-hover">
+          <table className="table table-hover table-condensed">
             <thead>
               <tr>
                 <th>アイドル</th>
@@ -217,6 +217,7 @@ class IdolUnit extends React.Component {
                 </tr>
               )}
               <tr>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td>{this.unit().life()}(+{this.unit().life() - this.state.unit.life()})</td>
@@ -249,7 +250,8 @@ export class App extends React.Component {
       url: 'data.tsv',
       cache : false,
       success: (text) => {
-        let data = text.split('\n').slice(1).map(row => new model.Idol(...row.split('\t').map(col => /^\d+$/.test(col) ? parseInt(col) : col)));
+        let data = text.split('\n').slice(1).filter(row => row.trim() != '').map(row => new model.Idol(...row.split('\t').map(col => /^\d+$/.test(col) ? parseInt(col) : col)));
+        console.log(data);
         this.setState({data: data});
       }
     });
