@@ -147,16 +147,9 @@ class IdolUnit extends React.Component {
     return e => this.setState({focus: n});
   }
   unit() {
-    let unit = this.state.unit.effect();
+    let unit = this.state.unit;
     if (Object.keys(this.refs).length == 0) return unit;
-    if (this.refs.all.checked)
-      return unit.allType();
-    else if (this.refs.cute.checked)
-      return unit.cuteType();
-    else if (this.refs.cool.checked)
-      return unit.coolType();
-    else if (this.refs.passion.checked)
-      return unit.passionType();
+    return unit.effect(this.music());
   }
   handleChange(e) {
     this.forceUpdate();
@@ -164,18 +157,12 @@ class IdolUnit extends React.Component {
   dissolve(event) {
     this.setState({unit: model.IdolUnit.empty(), focus: 0});
   }
+  music() {
+    return this.refs.all.checked ? model.AllTypeMusic : this.refs.cute.checked ? model.CuteMusic : this.refs.cool.checked ? model.CoolMusic : this.refs.passion.checked ? model.PassionMusic : model.Effect.identity();
+  }
   recommend(event) {
-    let data = this.props.data;
-    if (this.refs.all.checked)
-      data = data.map(idol => idol.brilliance(1.3));
-    else if (this.refs.cute.checked)
-      data = data.map(idol => idol.isCute() ? idol.brilliance(1.3) : idol);
-    else if (this.refs.cool.checked)
-      data = data.map(idol => idol.isCool() ? idol.brilliance(1.3) : idol);
-    else if (this.refs.passion.checked)
-      data = data.map(idol => idol.isPassion() ? idol.brilliance(1.3) : idol);
-    let unit = new model.IdolTable(data).unit();
-    this.setState({unit: new model.IdolUnit(...unit.members().map(idol => this.props.data.filter(x => x.name === idol.name)[0])), focus: 0});
+    let unit = new model.IdolTable(this.props.data, this.props.data).unit(this.music());
+    this.setState({unit: unit, focus: 0});
   }
   render() {
     return (

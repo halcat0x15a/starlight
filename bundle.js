@@ -65,31 +65,6 @@ var Idol = exports.Idol = function () {
     value: function isSSRare() {
       return this.rarity === 'SSR';
     }
-  }, {
-    key: 'energy',
-    value: function energy(n) {
-      return new Idol(this.name, this.type, this.rarity, Math.ceil(this.life * n), this.vocal, this.dance, this.visual, this.effect);
-    }
-  }, {
-    key: 'voice',
-    value: function voice(n) {
-      return new Idol(this.name, this.type, this.rarity, this.life, Math.ceil(this.vocal * n), this.dance, this.visual, this.effect);
-    }
-  }, {
-    key: 'step',
-    value: function step(n) {
-      return new Idol(this.name, this.type, this.rarity, this.life, this.vocal, Math.ceil(this.dance * n), this.visual, this.effect);
-    }
-  }, {
-    key: 'makeup',
-    value: function makeup(n) {
-      return new Idol(this.name, this.type, this.rarity, this.life, this.vocal, this.dance, Math.ceil(this.visual * n), this.effect);
-    }
-  }, {
-    key: 'brilliance',
-    value: function brilliance(n) {
-      return new Idol(this.name, this.type, this.rarity, this.life, Math.ceil(this.vocal * n), Math.ceil(this.dance * n), Math.ceil(this.visual * n), this.effect);
-    }
   }], [{
     key: 'unknown',
     value: function unknown() {
@@ -100,107 +75,74 @@ var Idol = exports.Idol = function () {
   return Idol;
 }();
 
-var Effects = new Map([['キュートアイドルのボーカルアピール値30%アップ', function (idol) {
-  return idol.isCute() ? idol.voice(1.3) : idol;
-}], ['キュートアイドルのボーカルアピール値60%アップ', function (idol) {
-  return idol.isCute() ? idol.voice(1.6) : idol;
-}], ['キュートアイドルのボーカルアピール値90%アップ', function (idol) {
-  return idol.isCute() ? idol.voice(1.9) : idol;
-}], ['キュートアイドルのダンスアピール値30%アップ', function (idol) {
-  return idol.isCute() ? idol.step(1.3) : idol;
-}], ['キュートアイドルのダンスアピール値60%アップ', function (idol) {
-  return idol.isCute() ? idol.step(1.6) : idol;
-}], ['キュートアイドルのダンスアピール値90%アップ', function (idol) {
-  return idol.isCute() ? idol.step(1.9) : idol;
-}], ['キュートアイドルのビジュアルアピール値30%アップ', function (idol) {
-  return idol.isCute() ? idol.makeup(1.3) : idol;
-}], ['キュートアイドルのビジュアルアピール値60%アップ', function (idol) {
-  return idol.isCute() ? idol.makeup(1.6) : idol;
-}], ['キュートアイドルのビジュアルアピール値90%アップ', function (idol) {
-  return idol.isCute() ? idol.makeup(1.9) : idol;
-}], ['キュートアイドルの全アピール値10%アップ', function (idol) {
-  return idol.isCute() ? idol.brilliance(1.1) : idol;
-}], ['キュートアイドルの全アピール値20%アップ', function (idol) {
-  return idol.isCute() ? idol.brilliance(1.2) : idol;
-}], ['キュートアイドルの全アピール値30%アップ', function (idol) {
-  return idol.isCute() ? idol.brilliance(1.3) : idol;
-}], ['キュートアイドルのライフ10%アップ', function (idol) {
-  return idol.isCute() ? idol.energy(1.1) : idol;
-}], ['キュートアイドルのライフ20%アップ', function (idol) {
-  return idol.isCute() ? idol.energy(1.2) : idol;
-}], ['キュートアイドルの特技発動確率15%アップ', function (idol) {
-  return idol;
-}], ['キュートアイドルの特技発動確率30%アップ', function (idol) {
-  return idol;
-}], ['クールアイドルのボーカルアピール値30%アップ', function (idol) {
-  return idol.isCool() ? idol.voice(1.3) : idol;
-}], ['クールアイドルのボーカルアピール値60%アップ', function (idol) {
-  return idol.isCool() ? idol.voice(1.6) : idol;
-}], ['クールアイドルのボーカルアピール値90%アップ', function (idol) {
-  return idol.isCool() ? idol.voice(1.9) : idol;
-}], ['クールアイドルのダンスアピール値30%アップ', function (idol) {
-  return idol.isCool() ? idol.step(1.3) : idol;
-}], ['クールアイドルのダンスアピール値60%アップ', function (idol) {
-  return idol.isCool() ? idol.step(1.6) : idol;
-}], ['クールアイドルのダンスアピール値90%アップ', function (idol) {
-  return idol.isCool() ? idol.step(1.9) : idol;
-}], ['クールアイドルのビジュアルアピール値30%アップ', function (idol) {
-  return idol.isCool() ? idol.makeup(1.3) : idol;
-}], ['クールアイドルのビジュアルアピール値60%アップ', function (idol) {
-  return idol.isCool() ? idol.makeup(1.6) : idol;
-}], ['クールアイドルのビジュアルアピール値90%アップ', function (idol) {
-  return idol.isCool() ? idol.makeup(1.9) : idol;
-}], ['クールアイドルの全アピール値10%アップ', function (idol) {
-  return idol.isCool() ? idol.brilliance(1.1) : idol;
-}], ['クールアイドルの全アピール値20%アップ', function (idol) {
-  return idol.isCool() ? idol.brilliance(1.2) : idol;
-}], ['クールアイドルの全アピール値30%アップ', function (idol) {
-  return idol.isCool() ? idol.brilliance(1.3) : idol;
-}], ['クールアイドルのライフ10%アップ', function (idol) {
-  return idol.isCool() ? idol.energy(1.1) : idol;
-}], ['クールアイドルのライフ20%アップ', function (idol) {
-  return idol.isCool() ? idol.energy(1.2) : idol;
-}], ['クールアイドルの特技発動確率15%アップ', function (idol) {
-  return idol;
-}], ['クールアイドルの特技発動確率30%アップ', function (idol) {
-  return idol;
-}], ['パッションアイドルのボーカルアピール値30%アップ', function (idol) {
-  return idol.isPassion() ? idol.voice(1.3) : idol;
-}], ['パッションアイドルのボーカルアピール値60%アップ', function (idol) {
-  return idol.isPassion() ? idol.voice(1.6) : idol;
-}], ['パッションアイドルのボーカルアピール値90%アップ', function (idol) {
-  return idol.isPassion() ? idol.voice(1.9) : idol;
-}], ['パッションアイドルのダンスアピール値30%アップ', function (idol) {
-  return idol.isPassion() ? idol.step(1.3) : idol;
-}], ['パッションアイドルのダンスアピール値60%アップ', function (idol) {
-  return idol.isPassion() ? idol.step(1.6) : idol;
-}], ['パッションアイドルのダンスアピール値90%アップ', function (idol) {
-  return idol.isPassion() ? idol.step(1.9) : idol;
-}], ['パッションアイドルのビジュアルアピール値30%アップ', function (idol) {
-  return idol.isPassion() ? idol.makeup(1.3) : idol;
-}], ['パッションアイドルのビジュアルアピール値60%アップ', function (idol) {
-  return idol.isPassion() ? idol.makeup(1.6) : idol;
-}], ['パッションアイドルのビジュアルアピール値90%アップ', function (idol) {
-  return idol.isPassion() ? idol.makeup(1.9) : idol;
-}], ['パッションアイドルの全アピール値10%アップ', function (idol) {
-  return idol.isPassion() ? idol.brilliance(1.1) : idol;
-}], ['パッションアイドルの全アピール値20%アップ', function (idol) {
-  return idol.isPassion() ? idol.brilliance(1.2) : idol;
-}], ['パッションアイドルの全アピール値30%アップ', function (idol) {
-  return idol.isPassion() ? idol.brilliance(1.3) : idol;
-}], ['パッションアイドルのライフ10%アップ', function (idol) {
-  return idol.isPassion() ? idol.energy(1.1) : idol;
-}], ['パッションアイドルのライフ20%アップ', function (idol) {
-  return idol.isPassion() ? idol.energy(1.2) : idol;
-}], ['パッションアイドルの特技発動確率15%アップ', function (idol) {
-  return idol;
-}], ['パッションアイドルの特技発動確率30%アップ', function (idol) {
-  return idol;
-}], ['全員のボーカルアピール値48%アップ', function (idol) {
-  return idol.voice(1.48);
-}], ['', function (idol) {
-  return idol;
-}]]);
+var Appeal = function () {
+  function Appeal(life, vocal, dance, visual) {
+    _classCallCheck(this, Appeal);
+
+    this.life = life;
+    this.vocal = vocal;
+    this.dance = dance;
+    this.visual = visual;
+  }
+
+  _createClass(Appeal, [{
+    key: 'add',
+    value: function add(that) {
+      return new Appeal(this.life + that.life, this.vocal + that.vocal, this.dance + that.dance, this.visual + that.visual);
+    }
+  }], [{
+    key: 'zero',
+    value: function zero() {
+      return new Appeal(0, 0, 0, 0);
+    }
+  }]);
+
+  return Appeal;
+}();
+
+var Effect = exports.Effect = function () {
+  function Effect(cute, cool, passion) {
+    _classCallCheck(this, Effect);
+
+    this.cute = cute;
+    this.cool = cool;
+    this.passion = passion;
+  }
+
+  _createClass(Effect, [{
+    key: 'apply',
+    value: function apply(idol) {
+      var appeal = idol.isCute() ? this.cute : idol.isCool() ? this.cool : idol.isPassion() ? this.passion : Appeal.zero();
+      var life = Math.ceil(idol.life * (100 + appeal.life) / 100);
+      var vocal = Math.ceil(idol.vocal * (110 + appeal.vocal) / 100);
+      var dance = Math.ceil(idol.dance * (110 + appeal.dance) / 100);
+      var visual = Math.ceil(idol.visual * (110 + appeal.visual) / 100);
+      return new Idol(idol.name, idol.type, idol.rarity, life, vocal, dance, visual, idol.effect);
+    }
+  }, {
+    key: 'compose',
+    value: function compose(that) {
+      return new Effect(this.cute.add(that.cute), this.cool.add(that.cool), this.passion.add(that.passion));
+    }
+  }], [{
+    key: 'identity',
+    value: function identity() {
+      return new Effect(Appeal.zero(), Appeal.zero(), Appeal.zero());
+    }
+  }]);
+
+  return Effect;
+}();
+
+var AllTypeMusic = exports.AllTypeMusic = new Effect(new Appeal(0, 30, 30, 30), new Appeal(0, 30, 30, 30), new Appeal(0, 30, 30, 30));
+
+var CuteMusic = exports.CuteMusic = new Effect(new Appeal(0, 30, 30, 30), Appeal.zero(), Appeal.zero());
+
+var CoolMusic = exports.CoolMusic = new Effect(Appeal.zero(), new Appeal(0, 30, 30, 30), Appeal.zero());
+
+var PassionMusic = exports.PassionMusic = new Effect(Appeal.zero(), Appeal.zero(), new Appeal(0, 30, 30, 30));
+
+var Effects = new Map([['キュートアイドルのボーカルアピール値30%アップ', new Effect(new Appeal(0, 30, 0, 0), Appeal.zero(), Appeal.zero())], ['キュートアイドルのボーカルアピール値60%アップ', new Effect(new Appeal(0, 60, 0, 0), Appeal.zero(), Appeal.zero())], ['キュートアイドルのボーカルアピール値90%アップ', new Effect(new Appeal(0, 90, 0, 0), Appeal.zero(), Appeal.zero())], ['キュートアイドルのダンスアピール値30%アップ', new Effect(new Appeal(0, 0, 30, 0), Appeal.zero(), Appeal.zero())], ['キュートアイドルのダンスアピール値60%アップ', new Effect(new Appeal(0, 0, 60, 0), Appeal.zero(), Appeal.zero())], ['キュートアイドルのダンスアピール値90%アップ', new Effect(new Appeal(0, 0, 90, 0), Appeal.zero(), Appeal.zero())], ['キュートアイドルのビジュアルアピール値30%アップ', new Effect(new Appeal(0, 0, 0, 30), Appeal.zero(), Appeal.zero())], ['キュートアイドルのビジュアルアピール値60%アップ', new Effect(new Appeal(0, 0, 0, 60), Appeal.zero(), Appeal.zero())], ['キュートアイドルのビジュアルアピール値90%アップ', new Effect(new Appeal(0, 0, 0, 90), Appeal.zero(), Appeal.zero())], ['キュートアイドルの全アピール値10%アップ', new Effect(new Appeal(0, 10, 10, 10), Appeal.zero(), Appeal.zero())], ['キュートアイドルの全アピール値20%アップ', new Effect(new Appeal(0, 20, 20, 20), Appeal.zero(), Appeal.zero())], ['キュートアイドルの全アピール値30%アップ', new Effect(new Appeal(0, 30, 30, 30), Appeal.zero(), Appeal.zero())], ['キュートアイドルのライフ10%アップ', new Effect(new Appeal(10, 0, 0, 0), Appeal.zero(), Appeal.zero())], ['キュートアイドルのライフ20%アップ', new Effect(new Appeal(20, 0, 0, 0), Appeal.zero(), Appeal.zero())], ['キュートアイドルのライフ30%アップ', new Effect(new Appeal(30, 0, 0, 0), Appeal.zero(), Appeal.zero())], ['キュートアイドルの特技発動確率15%アップ', Effect.identity()], ['キュートアイドルの特技発動確率30%アップ', Effect.identity()], ['クールアイドルのボーカルアピール値30%アップ', new Effect(Appeal.zero(), new Appeal(0, 30, 0, 0), Appeal.zero())], ['クールアイドルのボーカルアピール値60%アップ', new Effect(Appeal.zero(), new Appeal(0, 60, 0, 0), Appeal.zero())], ['クールアイドルのボーカルアピール値90%アップ', new Effect(Appeal.zero(), new Appeal(0, 90, 0, 0), Appeal.zero())], ['クールアイドルのダンスアピール値30%アップ', new Effect(Appeal.zero(), new Appeal(0, 0, 30, 0), Appeal.zero())], ['クールアイドルのダンスアピール値60%アップ', new Effect(Appeal.zero(), new Appeal(0, 0, 60, 0), Appeal.zero())], ['クールアイドルのダンスアピール値90%アップ', new Effect(Appeal.zero(), new Appeal(0, 0, 90, 0), Appeal.zero())], ['クールアイドルのビジュアルアピール値30%アップ', new Effect(Appeal.zero(), new Appeal(0, 0, 0, 30), Appeal.zero())], ['クールアイドルのビジュアルアピール値60%アップ', new Effect(Appeal.zero(), new Appeal(0, 0, 0, 60), Appeal.zero())], ['クールアイドルのビジュアルアピール値90%アップ', new Effect(Appeal.zero(), new Appeal(0, 0, 0, 90), Appeal.zero())], ['クールアイドルの全アピール値10%アップ', new Effect(Appeal.zero(), new Appeal(0, 10, 10, 10), Appeal.zero())], ['クールアイドルの全アピール値20%アップ', new Effect(Appeal.zero(), new Appeal(0, 20, 20, 20), Appeal.zero())], ['クールアイドルの全アピール値30%アップ', new Effect(Appeal.zero(), new Appeal(0, 30, 30, 30), Appeal.zero())], ['クールアイドルのライフ10%アップ', new Effect(Appeal.zero(), new Appeal(10, 0, 0, 0), Appeal.zero())], ['クールアイドルのライフ20%アップ', new Effect(Appeal.zero(), new Appeal(20, 0, 0, 0), Appeal.zero())], ['クールアイドルのライフ30%アップ', new Effect(Appeal.zero(), new Appeal(30, 0, 0, 0), Appeal.zero())], ['クールアイドルの特技発動確率15%アップ', Effect.identity()], ['クールアイドルの特技発動確率30%アップ', Effect.identity()], ['パッションアイドルのボーカルアピール値30%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(0, 30, 0, 0))], ['パッションアイドルのボーカルアピール値60%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(0, 60, 0, 0))], ['パッションアイドルのボーカルアピール値90%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(0, 90, 0, 0))], ['パッションアイドルのダンスアピール値30%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(0, 0, 30, 0))], ['パッションアイドルのダンスアピール値60%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(0, 0, 60, 0))], ['パッションアイドルのダンスアピール値90%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(0, 0, 90, 0))], ['パッションアイドルのビジュアルアピール値30%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(0, 0, 0, 30))], ['パッションアイドルのビジュアルアピール値60%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(0, 0, 0, 60))], ['パッションアイドルのビジュアルアピール値90%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(0, 0, 0, 90))], ['パッションアイドルの全アピール値10%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(0, 10, 10, 10))], ['パッションアイドルの全アピール値20%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(0, 20, 20, 20))], ['パッションアイドルの全アピール値30%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(0, 30, 30, 30))], ['パッションアイドルのライフ10%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(10, 0, 0, 0))], ['パッションアイドルのライフ20%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(20, 0, 0, 0))], ['パッションアイドルのライフ30%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(30, 0, 0, 0))], ['パッションアイドルの特技発動確率15%アップ', Effect.identity()], ['パッションアイドルの特技発動確率30%アップ', Effect.identity()], ['全員のボーカルアピール値48%アップ', new Effect(new Appeal(0, 48, 0, 0), new Appeal(0, 48, 0, 0), new Appeal(0, 48, 0, 0))], ['', Effect.identity()]]);
 
 var IdolUnit = exports.IdolUnit = function () {
   function IdolUnit(center, member1, member2, member3, member4, guest) {
@@ -221,11 +163,10 @@ var IdolUnit = exports.IdolUnit = function () {
     }
   }, {
     key: 'effect',
-    value: function effect() {
-      var _this = this;
-
+    value: function effect(music) {
+      var effect = Effects.get(this.center.effect).compose(Effects.get(this.guest.effect)).compose(music);
       return new (Function.prototype.bind.apply(IdolUnit, [null].concat(_toConsumableArray(this.members().map(function (idol) {
-        return Effects.get(_this.center.effect)(Effects.get(_this.guest.effect)(idol));
+        return effect.apply(idol);
       })))))();
     }
   }, {
@@ -263,34 +204,6 @@ var IdolUnit = exports.IdolUnit = function () {
         return n + idol.total();
       }, 0);
     }
-  }, {
-    key: 'cuteType',
-    value: function cuteType() {
-      return new (Function.prototype.bind.apply(IdolUnit, [null].concat(_toConsumableArray(this.members().map(function (idol) {
-        return idol.isCute() ? idol.brilliance(1.3) : idol;
-      })))))();
-    }
-  }, {
-    key: 'coolType',
-    value: function coolType() {
-      return new (Function.prototype.bind.apply(IdolUnit, [null].concat(_toConsumableArray(this.members().map(function (idol) {
-        return idol.isCool() ? idol.brilliance(1.3) : idol;
-      })))))();
-    }
-  }, {
-    key: 'passionType',
-    value: function passionType() {
-      return new (Function.prototype.bind.apply(IdolUnit, [null].concat(_toConsumableArray(this.members().map(function (idol) {
-        return idol.isPassion() ? idol.brilliance(1.3) : idol;
-      })))))();
-    }
-  }, {
-    key: 'allType',
-    value: function allType() {
-      return new (Function.prototype.bind.apply(IdolUnit, [null].concat(_toConsumableArray(this.members().map(function (idol) {
-        return idol.brilliance(1.3);
-      })))))();
-    }
   }], [{
     key: 'empty',
     value: function empty() {
@@ -302,11 +215,11 @@ var IdolUnit = exports.IdolUnit = function () {
 }();
 
 var IdolTable = exports.IdolTable = function () {
-  function IdolTable(idols) {
+  function IdolTable(idols, master) {
     _classCallCheck(this, IdolTable);
 
     this.idols = idols;
-    this.master = idols;
+    this.master = master;
   }
 
   _createClass(IdolTable, [{
@@ -321,7 +234,7 @@ var IdolTable = exports.IdolTable = function () {
       var idols = this.idols.filter(function (idol) {
         return testType(idol) && testRarity(idol);
       });
-      return Object.assign(new IdolTable(), this, { idols: idols });
+      return new IdolTable(idols, this.master);
     }
   }, {
     key: 'sort',
@@ -332,11 +245,13 @@ var IdolTable = exports.IdolTable = function () {
         return get(x) - get(y);
       };
       var idols = this.idols.slice(0).sort(compare);
-      return Object.assign(new IdolTable(), this, { idols: idols });
+      return new IdolTable(idols, this.master);
     }
   }, {
     key: 'unit',
-    value: function unit() {
+    value: function unit(music) {
+      var _this = this;
+
       var result = IdolUnit.empty();
       var guests = this.master.filter(function (idol) {
         return idol.isSSRare();
@@ -359,6 +274,7 @@ var IdolTable = exports.IdolTable = function () {
               var guest = _step2.value;
 
               var guestEffect = Effects.get(guest.effect);
+              var effect = centerEffect.compose(guestEffect).compose(music);
               var members = [Idol.unknown(), Idol.unknown(), Idol.unknown(), Idol.unknown()];
               var _iteratorNormalCompletion3 = true;
               var _didIteratorError3 = false;
@@ -368,8 +284,8 @@ var IdolTable = exports.IdolTable = function () {
                 for (var _iterator3 = this.idols[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
                   var idol = _step3.value;
 
-                  if (idol != center) {
-                    idol = centerEffect(guestEffect(idol));
+                  if (idol.name != center.name) {
+                    idol = effect.apply(idol);
                     if (members[0].total() < idol.total()) {
                       members[3] = members[2];
                       members[2] = members[1];
@@ -402,7 +318,7 @@ var IdolTable = exports.IdolTable = function () {
                 }
               }
 
-              var unit = new IdolUnit(center, members[0], members[1], members[2], members[3], guest);
+              var unit = new IdolUnit(effect.apply(center), members[0], members[1], members[2], members[3], effect.apply(guest));
               if (result.total() < unit.total()) {
                 result = unit;
               }
@@ -437,7 +353,11 @@ var IdolTable = exports.IdolTable = function () {
         }
       }
 
-      return result;
+      return new (Function.prototype.bind.apply(IdolUnit, [null].concat(_toConsumableArray(result.members().map(function (idol) {
+        return _this.master.filter(function (i) {
+          return i.name === idol.name;
+        })[0];
+      })))))();
     }
   }]);
 
@@ -19781,9 +19701,9 @@ var IdolUnit = function (_React$Component3) {
   }, {
     key: 'unit',
     value: function unit() {
-      var unit = this.state.unit.effect();
+      var unit = this.state.unit;
       if (Object.keys(this.refs).length == 0) return unit;
-      if (this.refs.all.checked) return unit.allType();else if (this.refs.cute.checked) return unit.cuteType();else if (this.refs.cool.checked) return unit.coolType();else if (this.refs.passion.checked) return unit.passionType();
+      return unit.effect(this.music());
     }
   }, {
     key: 'handleChange',
@@ -19796,31 +19716,20 @@ var IdolUnit = function (_React$Component3) {
       this.setState({ unit: model.IdolUnit.empty(), focus: 0 });
     }
   }, {
+    key: 'music',
+    value: function music() {
+      return this.refs.all.checked ? model.AllTypeMusic : this.refs.cute.checked ? model.CuteMusic : this.refs.cool.checked ? model.CoolMusic : this.refs.passion.checked ? model.PassionMusic : model.Effect.identity();
+    }
+  }, {
     key: 'recommend',
     value: function recommend(event) {
-      var _this9 = this;
-
-      var data = this.props.data;
-      if (this.refs.all.checked) data = data.map(function (idol) {
-        return idol.brilliance(1.3);
-      });else if (this.refs.cute.checked) data = data.map(function (idol) {
-        return idol.isCute() ? idol.brilliance(1.3) : idol;
-      });else if (this.refs.cool.checked) data = data.map(function (idol) {
-        return idol.isCool() ? idol.brilliance(1.3) : idol;
-      });else if (this.refs.passion.checked) data = data.map(function (idol) {
-        return idol.isPassion() ? idol.brilliance(1.3) : idol;
-      });
-      var unit = new model.IdolTable(data).unit();
-      this.setState({ unit: new (Function.prototype.bind.apply(model.IdolUnit, [null].concat(_toConsumableArray(unit.members().map(function (idol) {
-          return _this9.props.data.filter(function (x) {
-            return x.name === idol.name;
-          })[0];
-        })))))(), focus: 0 });
+      var unit = new model.IdolTable(this.props.data, this.props.data).unit(this.music());
+      this.setState({ unit: unit, focus: 0 });
     }
   }, {
     key: 'render',
     value: function render() {
-      var _this10 = this;
+      var _this9 = this;
 
       return _react2.default.createElement(
         'div',
@@ -19927,7 +19836,7 @@ var IdolUnit = function (_React$Component3) {
               this.state.unit.members().map(function (idol, i) {
                 return _react2.default.createElement(
                   'tr',
-                  { key: i, className: _this10.state.focus === i ? 'active' : '', onClick: _this10.onClick(i) },
+                  { key: i, className: _this9.state.focus === i ? 'active' : '', onClick: _this9.onClick(i) },
                   _react2.default.createElement(
                     'td',
                     null,
@@ -20064,16 +19973,16 @@ var App = exports.App = function (_React$Component4) {
   function App(props) {
     _classCallCheck(this, App);
 
-    var _this11 = _possibleConstructorReturn(this, Object.getPrototypeOf(App).call(this, props));
+    var _this10 = _possibleConstructorReturn(this, Object.getPrototypeOf(App).call(this, props));
 
-    _this11.state = { data: [] };
-    return _this11;
+    _this10.state = { data: [] };
+    return _this10;
   }
 
   _createClass(App, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var _this12 = this;
+      var _this11 = this;
 
       $.ajax({
         url: 'data.tsv',
@@ -20088,7 +19997,7 @@ var App = exports.App = function (_React$Component4) {
             })))))();
           });
           console.log(data);
-          _this12.setState({ data: data });
+          _this11.setState({ data: data });
         }
       });
     }
