@@ -1,4 +1,4 @@
-import * as view from "./view";
+import * as view from './view';
 import React from 'react';
 import ReactDOM from 'react-dom';
 

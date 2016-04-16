@@ -204,7 +204,7 @@ class IdolUnit extends React.Component {
                 </tr>
               )}
               <tr>
-                <td></td>
+                <td>合計</td>
                 <td></td>
                 <td></td>
                 <td>{this.unit().life()}(+{this.unit().life() - this.state.unit.life()})</td>
@@ -238,7 +238,6 @@ export class App extends React.Component {
       cache : false,
       success: (text) => {
         let data = text.split('\n').slice(1).filter(row => row.trim() != '').map(row => new model.Idol(...row.split('\t').map(col => /^\d+$/.test(col) ? parseInt(col) : col)));
-        console.log(data);
         this.setState({data: data});
       }
     });

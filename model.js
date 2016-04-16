@@ -48,12 +48,27 @@ class Appeal {
   add(that) {
     return new Appeal(this.life + that.life, this.vocal + that.vocal, this.dance + that.dance, this.visual + that.visual);
   }
+  static life(n) {
+    return new Appeal(n, 0, 0, 0);
+  }
+  static vocal(n) {
+    return new Appeal(0, n, 0, 0);
+  }
+  static dance(n) {
+    return new Appeal(0, 0, n, 0);
+  }
+  static visual(n) {
+    return new Appeal(0, 0, 0, n);
+  }
+  static all(n) {
+    return new Appeal(0, n, n, n);
+  }
   static zero() {
     return new Appeal(0, 0, 0, 0);
   }
 }
 
-export class Effect {
+class Effect {
   constructor(cute, cool, passion) {
     this.cute = cute;
     this.cool = cool;
@@ -62,80 +77,94 @@ export class Effect {
   apply(idol) {
     let appeal = idol.isCute() ? this.cute : idol.isCool() ? this.cool : idol.isPassion() ? this.passion : Appeal.zero();
     let life = Math.ceil(idol.life * (100 + appeal.life) / 100);
-    let vocal = Math.ceil(idol.vocal * (110 + appeal.vocal) / 100);
-    let dance = Math.ceil(idol.dance * (110 + appeal.dance) / 100);
-    let visual = Math.ceil(idol.visual * (110 + appeal.visual) / 100);
+    let vocal = Math.ceil(idol.vocal * (100 + appeal.vocal) / 100);
+    let dance = Math.ceil(idol.dance * (100 + appeal.dance) / 100);
+    let visual = Math.ceil(idol.visual * (100 + appeal.visual) / 100);
     return new Idol(idol.name, idol.type, idol.rarity, life, vocal, dance, visual, idol.effect);
   }
   compose(that) {
     return new Effect(this.cute.add(that.cute), this.cool.add(that.cool), this.passion.add(that.passion));
   }
+  static cute(appeal) {
+    return new Effect(appeal, Appeal.zero(), Appeal.zero());
+  }
+  static cool(appeal) {
+    return new Effect(Appeal.zero(), appeal, Appeal.zero());
+  }
+  static passion(appeal) {
+    return new Effect(Appeal.zero(), Appeal.zero(), appeal);
+  }
+  static all(appeal) {
+    return new Effect(appeal, appeal, appeal);
+  }
   static identity() {
-    return new Effect(Appeal.zero(), Appeal.zero(), Appeal.zero());
+    return Effect.all(Appeal.zero());
   }
 }
 
-export const AllTypeMusic = new Effect(new Appeal(0, 30, 30, 30), new Appeal(0, 30, 30, 30), new Appeal(0, 30, 30, 30));
+export const AllTypeMusic = Effect.all(Appeal.all(30));
 
-export const CuteMusic = new Effect(new Appeal(0, 30, 30, 30), Appeal.zero(), Appeal.zero());
+export const CuteMusic = Effect.cute(Appeal.all(30));
 
-export const CoolMusic = new Effect(Appeal.zero(), new Appeal(0, 30, 30, 30), Appeal.zero());
+export const CoolMusic = Effect.cool(Appeal.all(30));
 
-export const PassionMusic = new Effect(Appeal.zero(), Appeal.zero(), new Appeal(0, 30, 30, 30));
+export const PassionMusic = Effect.passion(Appeal.all(30));
+
+export const RoomEffect = Effect.all(Appeal.all(10));
 
 const Effects = new Map([
-  ['キュートアイドルのボーカルアピール値30%アップ', new Effect(new Appeal(0, 30, 0, 0), Appeal.zero(), Appeal.zero())],
-  ['キュートアイドルのボーカルアピール値60%アップ', new Effect(new Appeal(0, 60, 0, 0), Appeal.zero(), Appeal.zero())],
-  ['キュートアイドルのボーカルアピール値90%アップ', new Effect(new Appeal(0, 90, 0, 0), Appeal.zero(), Appeal.zero())],
-  ['キュートアイドルのダンスアピール値30%アップ', new Effect(new Appeal(0, 0, 30, 0), Appeal.zero(), Appeal.zero())],
-  ['キュートアイドルのダンスアピール値60%アップ', new Effect(new Appeal(0, 0, 60, 0), Appeal.zero(), Appeal.zero())],
-  ['キュートアイドルのダンスアピール値90%アップ', new Effect(new Appeal(0, 0, 90, 0), Appeal.zero(), Appeal.zero())],
-  ['キュートアイドルのビジュアルアピール値30%アップ', new Effect(new Appeal(0, 0, 0, 30), Appeal.zero(), Appeal.zero())],
-  ['キュートアイドルのビジュアルアピール値60%アップ', new Effect(new Appeal(0, 0, 0, 60), Appeal.zero(), Appeal.zero())],
-  ['キュートアイドルのビジュアルアピール値90%アップ', new Effect(new Appeal(0, 0, 0, 90), Appeal.zero(), Appeal.zero())],
-  ['キュートアイドルの全アピール値10%アップ', new Effect(new Appeal(0, 10, 10, 10), Appeal.zero(), Appeal.zero())],
-  ['キュートアイドルの全アピール値20%アップ', new Effect(new Appeal(0, 20, 20, 20), Appeal.zero(), Appeal.zero())],
-  ['キュートアイドルの全アピール値30%アップ', new Effect(new Appeal(0, 30, 30, 30), Appeal.zero(), Appeal.zero())],
-  ['キュートアイドルのライフ10%アップ', new Effect(new Appeal(10, 0, 0, 0), Appeal.zero(), Appeal.zero())],
-  ['キュートアイドルのライフ20%アップ', new Effect(new Appeal(20, 0, 0, 0), Appeal.zero(), Appeal.zero())],
-  ['キュートアイドルのライフ30%アップ', new Effect(new Appeal(30, 0, 0, 0), Appeal.zero(), Appeal.zero())],
+  ['キュートアイドルのボーカルアピール値30%アップ', Effect.cute(Appeal.vocal(30))],
+  ['キュートアイドルのボーカルアピール値60%アップ', Effect.cute(Appeal.vocal(60))],
+  ['キュートアイドルのボーカルアピール値90%アップ', Effect.cute(Appeal.vocal(90))],
+  ['キュートアイドルのダンスアピール値30%アップ', Effect.cute(Appeal.dance(30))],
+  ['キュートアイドルのダンスアピール値60%アップ', Effect.cute(Appeal.dance(60))],
+  ['キュートアイドルのダンスアピール値90%アップ', Effect.cute(Appeal.dance(90))],
+  ['キュートアイドルのビジュアルアピール値30%アップ', Effect.cute(Appeal.visual(30))],
+  ['キュートアイドルのビジュアルアピール値60%アップ', Effect.cute(Appeal.visual(60))],
+  ['キュートアイドルのビジュアルアピール値90%アップ', Effect.cute(Appeal.visual(90))],
+  ['キュートアイドルの全アピール値10%アップ', Effect.cute(Appeal.all(10))],
+  ['キュートアイドルの全アピール値20%アップ', Effect.cute(Appeal.all(20))],
+  ['キュートアイドルの全アピール値30%アップ', Effect.cute(Appeal.all(30))],
+  ['キュートアイドルのライフ10%アップ', Effect.cute(Appeal.life(10))],
+  ['キュートアイドルのライフ20%アップ', Effect.cute(Appeal.life(20))],
+  ['キュートアイドルのライフ30%アップ', Effect.cute(Appeal.life(30))],
   ['キュートアイドルの特技発動確率15%アップ', Effect.identity()],
   ['キュートアイドルの特技発動確率30%アップ', Effect.identity()],
-  ['クールアイドルのボーカルアピール値30%アップ', new Effect(Appeal.zero(), new Appeal(0, 30, 0, 0), Appeal.zero())],
-  ['クールアイドルのボーカルアピール値60%アップ', new Effect(Appeal.zero(), new Appeal(0, 60, 0, 0), Appeal.zero())],
-  ['クールアイドルのボーカルアピール値90%アップ', new Effect(Appeal.zero(), new Appeal(0, 90, 0, 0), Appeal.zero())],
-  ['クールアイドルのダンスアピール値30%アップ', new Effect(Appeal.zero(), new Appeal(0, 0, 30, 0), Appeal.zero())],
-  ['クールアイドルのダンスアピール値60%アップ', new Effect(Appeal.zero(), new Appeal(0, 0, 60, 0), Appeal.zero())],
-  ['クールアイドルのダンスアピール値90%アップ', new Effect(Appeal.zero(), new Appeal(0, 0, 90, 0), Appeal.zero())],
-  ['クールアイドルのビジュアルアピール値30%アップ', new Effect(Appeal.zero(), new Appeal(0, 0, 0, 30), Appeal.zero())],
-  ['クールアイドルのビジュアルアピール値60%アップ', new Effect(Appeal.zero(), new Appeal(0, 0, 0, 60), Appeal.zero())],
-  ['クールアイドルのビジュアルアピール値90%アップ', new Effect(Appeal.zero(), new Appeal(0, 0, 0, 90), Appeal.zero())],
-  ['クールアイドルの全アピール値10%アップ', new Effect(Appeal.zero(), new Appeal(0, 10, 10, 10), Appeal.zero())],
-  ['クールアイドルの全アピール値20%アップ', new Effect(Appeal.zero(), new Appeal(0, 20, 20, 20), Appeal.zero())],
-  ['クールアイドルの全アピール値30%アップ', new Effect(Appeal.zero(), new Appeal(0, 30, 30, 30), Appeal.zero())],
-  ['クールアイドルのライフ10%アップ', new Effect(Appeal.zero(), new Appeal(10, 0, 0, 0), Appeal.zero())],
-  ['クールアイドルのライフ20%アップ', new Effect(Appeal.zero(), new Appeal(20, 0, 0, 0), Appeal.zero())],
-  ['クールアイドルのライフ30%アップ', new Effect(Appeal.zero(), new Appeal(30, 0, 0, 0), Appeal.zero())],
+  ['クールアイドルのボーカルアピール値30%アップ', Effect.cool(Appeal.vocal(30))],
+  ['クールアイドルのボーカルアピール値60%アップ', Effect.cool(Appeal.vocal(60))],
+  ['クールアイドルのボーカルアピール値90%アップ', Effect.cool(Appeal.vocal(90))],
+  ['クールアイドルのダンスアピール値30%アップ', Effect.cool(Appeal.dance(30))],
+  ['クールアイドルのダンスアピール値60%アップ', Effect.cool(Appeal.dance(60))],
+  ['クールアイドルのダンスアピール値90%アップ', Effect.cool(Appeal.dance(90))],
+  ['クールアイドルのビジュアルアピール値30%アップ', Effect.cool(Appeal.visual(30))],
+  ['クールアイドルのビジュアルアピール値60%アップ', Effect.cool(Appeal.visual(60))],
+  ['クールアイドルのビジュアルアピール値90%アップ', Effect.cool(Appeal.visual(90))],
+  ['クールアイドルの全アピール値10%アップ', Effect.cool(Appeal.all(10))],
+  ['クールアイドルの全アピール値20%アップ', Effect.cool(Appeal.all(20))],
+  ['クールアイドルの全アピール値30%アップ', Effect.cool(Appeal.all(30))],
+  ['クールアイドルのライフ10%アップ', Effect.cool(Appeal.life(10))],
+  ['クールアイドルのライフ20%アップ', Effect.cool(Appeal.life(20))],
+  ['クールアイドルのライフ30%アップ', Effect.cool(Appeal.life(30))],
   ['クールアイドルの特技発動確率15%アップ', Effect.identity()],
   ['クールアイドルの特技発動確率30%アップ', Effect.identity()],
-  ['パッションアイドルのボーカルアピール値30%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(0, 30, 0, 0))],
-  ['パッションアイドルのボーカルアピール値60%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(0, 60, 0, 0))],
-  ['パッションアイドルのボーカルアピール値90%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(0, 90, 0, 0))],
-  ['パッションアイドルのダンスアピール値30%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(0, 0, 30, 0))],
-  ['パッションアイドルのダンスアピール値60%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(0, 0, 60, 0))],
-  ['パッションアイドルのダンスアピール値90%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(0, 0, 90, 0))],
-  ['パッションアイドルのビジュアルアピール値30%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(0, 0, 0, 30))],
-  ['パッションアイドルのビジュアルアピール値60%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(0, 0, 0, 60))],
-  ['パッションアイドルのビジュアルアピール値90%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(0, 0, 0, 90))],
-  ['パッションアイドルの全アピール値10%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(0, 10, 10, 10))],
-  ['パッションアイドルの全アピール値20%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(0, 20, 20, 20))],
-  ['パッションアイドルの全アピール値30%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(0, 30, 30, 30))],
-  ['パッションアイドルのライフ10%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(10, 0, 0, 0))],
-  ['パッションアイドルのライフ20%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(20, 0, 0, 0))],
-  ['パッションアイドルのライフ30%アップ', new Effect(Appeal.zero(), Appeal.zero(), new Appeal(30, 0, 0, 0))],
+  ['パッションアイドルのボーカルアピール値30%アップ', Effect.passion(Appeal.vocal(30))],
+  ['パッションアイドルのボーカルアピール値60%アップ', Effect.passion(Appeal.vocal(60))],
+  ['パッションアイドルのボーカルアピール値90%アップ', Effect.passion(Appeal.vocal(90))],
+  ['パッションアイドルのダンスアピール値30%アップ', Effect.passion(Appeal.dance(30))],
+  ['パッションアイドルのダンスアピール値60%アップ', Effect.passion(Appeal.dance(60))],
+  ['パッションアイドルのダンスアピール値90%アップ', Effect.passion(Appeal.dance(90))],
+  ['パッションアイドルのビジュアルアピール値30%アップ', Effect.passion(Appeal.visual(30))],
+  ['パッションアイドルのビジュアルアピール値60%アップ', Effect.passion(Appeal.visual(60))],
+  ['パッションアイドルのビジュアルアピール値90%アップ', Effect.passion(Appeal.visual(90))],
+  ['パッションアイドルの全アピール値10%アップ', Effect.passion(Appeal.all(10))],
+  ['パッションアイドルの全アピール値20%アップ', Effect.passion(Appeal.all(20))],
+  ['パッションアイドルの全アピール値30%アップ', Effect.passion(Appeal.all(30))],
+  ['パッションアイドルのライフ10%アップ', Effect.passion(Appeal.life(10))],
+  ['パッションアイドルのライフ20%アップ', Effect.passion(Appeal.life(20))],
+  ['パッションアイドルのライフ30%アップ', Effect.passion(Appeal.life(30))],
   ['パッションアイドルの特技発動確率15%アップ', Effect.identity()],
   ['パッションアイドルの特技発動確率30%アップ', Effect.identity()],
-  ['全員のボーカルアピール値48%アップ', new Effect(new Appeal(0, 48, 0, 0), new Appeal(0, 48, 0, 0), new Appeal(0, 48, 0, 0))],
+  ['全員のボーカルアピール値48%アップ', Effect.all(Appeal.vocal(48))],
   ['', Effect.identity()]
 ]);
 
